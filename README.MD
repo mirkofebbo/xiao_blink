@@ -23,3 +23,9 @@ idf.py set-target esp32c6
 
 # Write the Application Code
 Open main/xiao_blink.c and replace its contents with the code.
+
+
+# Run project:
+```
+idf.py build flash monitor
+```
