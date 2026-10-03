@@ -1,6 +1,6 @@
 {
     "idf.currentSetup": "/Users/mirko/.espressif/v6.1/esp-idf",
-    "idf.port": "/dev/tty.usbmodem11401",
+    "idf.port": "/dev/tty.usbmodem1101",
     "idf.flashType": "UART",
     "idf.openOcdConfigs": [
         "board/esp32c6-builtin.cfg"
@@ -14,5 +14,5 @@
       "--query-driver=**",
       "--compile-commands-dir=/Users/mirko/Documents/code/ESP-IDF/Test/xiao_blink/build"
     ],
-    "idf.monitorPort": "/dev/tty.usbmodem11401"
+    "idf.monitorPort": "/dev/tty.usbmodem1101"
 }
