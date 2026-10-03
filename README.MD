@@ -8,8 +8,7 @@ In this example I used Gemini to help me get started and understand the basic of
 Run the export script located in your ESP-IDF installation directory (which is typically ~/esp/esp-idf):
 
 ```
-    cd ~/esp/esp-idf
-    . ./export.sh
+    source ~/esp/esp-idf/export.sh
 ```
 
 ## Scaffold the Project
