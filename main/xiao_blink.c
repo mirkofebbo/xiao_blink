@@ -3,12 +3,19 @@
 #include "freertos/task.h"
 #include "freertos/queue.h"
 #include "driver/gpio.h"
+#include "driver/ledc.h"
 
 #define BOOT_BUTTON_GPIO 9 // XIAO ESP32-C6 boot button
 #define BLINK_GPIO 15      // XIAO ESP32-C6 user LED
 
+// ==== STRUCT DEFINITIONS ====
+typedef struct {
+    uint32_t delay;
+    uint32_t brighness;
+} led_command_t;
+    
 // ==== QUEUE AND TASK DEFINITIONS ====
-QueueHandle_t blink_delay_queue;
+QueueHandle_t led_cmd_queue;
 
 // ==== BUTTON TASK ====
 void button_task(void *pvParameter)
@@ -17,32 +24,40 @@ void button_task(void *pvParameter)
     // Initialize the boot button GPIO
     gpio_reset_pin(BOOT_BUTTON_GPIO);
     gpio_set_direction(BOOT_BUTTON_GPIO, GPIO_MODE_INPUT);
-
     gpio_set_pull_mode(BOOT_BUTTON_GPIO, GPIO_PULLUP_ONLY);
 
-    int current_delay = 1000;
-    int last_button_state = 1; // need to double check this
+    int last_button_state = 1;
 
-    while (1)
-    {
+    led_command_t my_cmd = {
+        .delay_ms = 1000,
+        .brighness = 255
+    };
+
+    while (1) {
         int button_state = gpio_get_level(BOOT_BUTTON_GPIO);
 
         // Failing edge detection
-        if (button_state == 0 && last_button_state == 1)
-        {
+        if (button_state == 0 && last_button_state == 1) {
 
-            current_delay = (current_delay == 1000) ? 100 : 1000;
-            printf("[BUTTON_TASK] set delay: %d\n", current_delay);
+            if (my_cmd.delay == 1000) {
+                my_cmd.delay = 100;
+                my_cmd.brighness = 50;
+            } else {
+                my_cmd.delay = 1000;
+                my_cmd.brighness = 255;
+            }
+
+            printf("[BUTTON_TASK] delay: %lu brightness: %lu\n", my_cmd.delay, my_cmd.brighness);
 
             // Sending to the queue
-            xQueueSend(blink_delay_queue, &current_delay, 0); // params: queue to write to, pointer to data, block time
+            xQueueSend(blink_delay_queue, &my_cmd, 0); // params: queue to write to, pointer to data, block time
 
             // Software debounce
-            vTaskDelay(pdMS_TO_TICKS(50));
+            vTaskDelay(pdMS_TO_TICKS(200));
         }
 
         last_button_state = button_state;
-
+ 
         vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
