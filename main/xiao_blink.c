@@ -16,7 +16,7 @@ typedef struct {
     
 // ==== QUEUE AND TASK DEFINITIONS ====
 QueueHandle_t led_cmd_queue;
-
+QueueHandle_t blink_delay_queue;
 // ==== BUTTON TASK ====
 void button_task(void *pvParameter)
 {
@@ -29,7 +29,7 @@ void button_task(void *pvParameter)
     int last_button_state = 1;
 
     led_command_t my_cmd = {
-        .delay_ms = 1000,
+        .delay = 1000,
         .brighness = 255
     };
 
